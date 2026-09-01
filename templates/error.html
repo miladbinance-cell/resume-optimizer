@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Error — ResumeAI{% endblock %}
+
+{% block content %}
+<section class="py-16 md:py-24 bg-gray-50 min-h-screen">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-10">
+            <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span class="text-3xl">⚠️</span>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-900 mb-3">Something went wrong</h1>
+            <p class="text-gray-600 mb-8">{{ message }}</p>
+            <a href="/" class="inline-block bg-brand-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-brand-700 transition-all">
+                Back to Home
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

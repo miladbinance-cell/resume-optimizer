@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://resumeai.com/sitemap.xml

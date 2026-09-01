@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Payment Successful — ResumeAI{% endblock %}
+
+{% block content %}
+<section class="py-16 md:py-24 bg-gray-50 min-h-screen">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-10">
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-900 mb-3">Payment Successful! 🎉</h1>
+            <p class="text-gray-600 mb-8">
+                Your {{ plan }} plan has been activated. Our AI is now optimizing your resume.
+            </p>
+
+            <div class="bg-brand-50 rounded-xl p-6 mb-8">
+                <div class="flex items-center justify-center gap-3 mb-4">
+                    <div class="animate-spin rounded-full h-6 w-6 border-2 border-brand-600 border-t-transparent"></div>
+                    <span class="text-brand-700 font-medium">Processing your resume...</span>
+                </div>
+                <p class="text-sm text-brand-600">This usually takes 1-2 minutes. You'll receive an email with your download link.</p>
+            </div>
+
+            <a href="/results/{{ file_id }}" class="inline-block bg-brand-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-brand-700 transition-all">
+                View Your Results →
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

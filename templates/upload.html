@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Upload Your Resume — ResumeAI{% endblock %}
+
+{% block content %}
+<section class="py-16 md:py-24 bg-gray-50 min-h-screen">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Optimize Your Resume</h1>
+            <p class="text-gray-600">Upload your resume and paste the job description. We'll do the rest.</p>
+        </div>
+
+        {% if error %}
+        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+            <form action="/upload/resume" method="POST" enctype="multipart/form-data">
+                <!-- File Upload -->
+                <div class="mb-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Upload Your Resume *</label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:border-brand-400 transition-colors cursor-pointer" id="drop-zone">
+                        <input type="file" name="file" id="file-input" accept=".pdf,.docx,.txt" required class="hidden">
+                        <div id="upload-prompt">
+                            <svg class="w-12 h-12 text-gray-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                            </svg>
+                            <p class="text-gray-600 font-medium">Drag & drop your resume or click to browse</p>
+                            <p class="text-gray-400 text-sm mt-1">PDF, DOCX, or TXT (max 10MB)</p>
+                        </div>
+                        <div id="file-name" class="hidden text-brand-600 font-medium"></div>
+                    </div>
+                </div>
+
+                <!-- Job Title -->
+                <div class="mb-6">
+                    <label for="job_title" class="block text-sm font-semibold text-gray-700 mb-2">Job Title</label>
+                    <input type="text" name="job_title" id="job_title" placeholder="e.g. Senior Software Engineer" 
+                           class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all">
+                </div>
+
+                <!-- Company -->
+                <div class="mb-6">
+                    <label for="company" class="block text-sm font-semibold text-gray-700 mb-2">Company (optional)</label>
+                    <input type="text" name="company" id="company" placeholder="e.g. Google" 
+                           class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all">
+                </div>
+
+                <!-- Job Description -->
+                <div class="mb-8">
+                    <label for="job_description" class="block text-sm font-semibold text-gray-700 mb-2">Job Description</label>
+                    <textarea name="job_description" id="job_description" rows="8" placeholder="Paste the full job description here..." 
+                              class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-all"></textarea>
+                    <p class="text-gray-400 text-sm mt-1">The more detail, the better the optimization.</p>
+                </div>
+
+                <!-- Submit -->
+                <button type="submit" class="w-full bg-brand-600 text-white py-4 rounded-lg text-lg font-semibold hover:bg-brand-700 transition-all shadow-lg shadow-brand-200">
+                    Analyze & Preview →
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<script>
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    const uploadPrompt = document.getElementById('upload-prompt');
+    const fileName = document.getElementById('file-name');
+
+    dropZone.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('border-brand-400'); });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('border-brand-400'));
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('border-brand-400');
+        fileInput.files = e.dataTransfer.files;
+        updateFileName();
+    });
+    fileInput.addEventListener('change', updateFileName);
+
+    function updateFileName() {
+        if (fileInput.files.length > 0) {
+            uploadPrompt.classList.add('hidden');
+            fileName.classList.remove('hidden');
+            fileName.textContent = '📄 ' + fileInput.files[0].name;
+        }
+    }
+</script>
+{% endblock %}
