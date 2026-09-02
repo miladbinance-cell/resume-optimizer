@@ -157,3 +157,55 @@ Provide specific, actionable tips in markdown format."""
         return response.choices[0].message.content
     except Exception as e:
         return f"Error generating LinkedIn tips: {str(e)}"
+
+
+async def score_resume_ats(resume_text: str) -> dict:
+    """
+    Free ATS Score Checker — analyzes resume for ATS readiness.
+    Returns a dict with score, strengths, weaknesses, and missing keywords.
+    """
+    system_prompt = """You are an ATS (Applicant Tracking System) expert. Analyze resumes and provide:
+1. Overall ATS Score (0-100)
+2. Top 3 strengths
+3. Top 3 weaknesses/gaps
+4. Missing action verbs
+5. Quantified achievement count (bullet points with numbers)
+6. Formatting issues
+7. 1-sentence summary
+
+Return ONLY valid JSON, no markdown:
+{
+  "score": 65,
+  "strengths": ["..."],
+  "weaknesses": ["...", "..."],
+  "missing_verbs": true,
+  "quantified_count": 3,
+  "formatting_issues": ["..."],
+  "summary": "..."
+}"""
+
+    user_prompt = f"Analyze this resume for ATS readiness:\n\n{resume_text[:4000]}"
+
+    import json
+    try:
+        response = _get_client().chat.completions.create(
+            model=OPENAI_MODEL,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+            ],
+            temperature=0.3,
+            max_tokens=600,
+        )
+        result = json.loads(response.choices[0].message.content)
+        return result
+    except Exception:
+        return {
+            "score": 50,
+            "strengths": ["Could not analyze fully"],
+            "weaknesses": ["Error during analysis", "Try again"],
+            "missing_verbs": True,
+            "quantified_count": 0,
+            "formatting_issues": [],
+            "summary": "Analysis error — please try again.",
+        }

@@ -73,3 +73,36 @@ async def upload_resume(
             "job_description": job_description[:500],
         },
     )
+
+
+@router.post("/ats-check")
+async def ats_check(
+    request: Request,
+    file: UploadFile = File(...),
+):
+    """Free ATS Score Checker - analyzes resume only, no payment needed"""
+    contents = await file.read()
+    size_mb = len(contents) / (1024 * 1024)
+    if size_mb > MAX_UPLOAD_SIZE_MB:
+        return templates.TemplateResponse(
+            "ats_check.html",
+            {"request": request, "error": f"File too large. Max {MAX_UPLOAD_SIZE_MB}MB."},
+        )
+
+    file_id = str(uuid.uuid4())
+    ext = os.path.splitext(file.filename)[1] if file.filename else ".pdf"
+    filepath = os.path.join(UPLOAD_DIR, f"{file_id}{ext}")
+
+    with open(filepath, "wb") as f:
+        f.write(contents)
+
+    resume_text = extract_text_from_file(filepath, ext)
+
+    # AI Scoring
+    from services.ai_optimizer import score_resume_ats
+    score_data = await score_resume_ats(resume_text)
+
+    return templates.TemplateResponse(
+        "ats_result.html",
+        {"request": request, "score_data": score_data, "resume_text": resume_text[:2000]},
+    )

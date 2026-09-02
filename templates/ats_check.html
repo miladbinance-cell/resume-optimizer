@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Free ATS Score Checker — ResumeAI{% endblock %}
+{% block description %}Check your resume's ATS score for free. See how well your resume will perform against Applicant Tracking Systems.{% endblock %}
+
+{% block content %}
+<section class="py-12 md:py-20 bg-gray-50 min-h-screen">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-10">
+            <div class="inline-flex items-center bg-green-100 text-green-700 px-4 py-1.5 rounded-full text-sm font-medium mb-4">
+                🎉 100% Free — No Signup Required
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3">Check Your ATS Score</h1>
+            <p class="text-lg text-gray-600">Upload your resume and get an instant ATS readiness score. See what recruiters see.</p>
+        </div>
+
+        {% if error %}
+        <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">{{ error }}</div>
+        {% endif %}
+
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+            <form action="/upload/ats-check" method="POST" enctype="multipart/form-data">
+                <div class="mb-8">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Upload Your Resume</label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-xl p-10 text-center hover:border-brand-400 transition-colors cursor-pointer" id="drop-zone">
+                        <input type="file" name="file" id="file-input" accept=".pdf,.docx,.txt" required class="hidden">
+                        <div id="upload-prompt">
+                            <svg class="w-14 h-14 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                            </svg>
+                            <p class="text-gray-600 font-medium text-lg">Drag & drop your resume here</p>
+                            <p class="text-gray-400 text-sm mt-2">or click to browse — PDF, DOCX, TXT (max 10MB)</p>
+                        </div>
+                        <div id="file-name" class="hidden text-brand-600 font-medium text-lg"></div>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-brand-600 text-white py-4 rounded-xl text-lg font-semibold hover:bg-brand-700 transition-all shadow-lg shadow-brand-200">
+                    🔍 Analyze My Resume — It's Free
+                </button>
+            </form>
+
+            <div class="mt-8 pt-6 border-t border-gray-100 text-center text-sm text-gray-500">
+                <p>Your resume is analyzed securely. We never store or share your data.</p>
+            </div>
+        </div>
+
+        <!-- How it works -->
+        <div class="mt-12 grid grid-cols-3 gap-6 text-center">
+            <div>
+                <div class="text-3xl mb-2">📄</div>
+                <p class="font-semibold text-gray-900 text-sm">Upload Resume</p>
+                <p class="text-xs text-gray-500 mt-1">PDF, DOCX, or TXT</p>
+            </div>
+            <div>
+                <div class="text-3xl mb-2">🤖</div>
+                <p class="font-semibold text-gray-900 text-sm">AI Analysis</p>
+                <p class="text-xs text-gray-500 mt-1">ATS scoring in seconds</p>
+            </div>
+            <div>
+                <div class="text-3xl mb-2">📊</div>
+                <p class="font-semibold text-gray-900 text-sm">Get Your Score</p>
+                <p class="text-xs text-gray-500 mt-1">Strengths & gaps revealed</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    const dz = document.getElementById('drop-zone');
+    const fi = document.getElementById('file-input');
+    const up = document.getElementById('upload-prompt');
+    const fn = document.getElementById('file-name');
+    dz.addEventListener('click', () => fi.click());
+    dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('border-brand-400'); });
+    dz.addEventListener('dragleave', () => dz.classList.remove('border-brand-400'));
+    dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('border-brand-400'); fi.files = e.dataTransfer.files; showName(); });
+    fi.addEventListener('change', showName);
+    function showName() { if(fi.files.length) { up.classList.add('hidden'); fn.classList.remove('hidden'); fn.textContent = '📄 ' + fi.files[0].name; } }
+</script>
+{% endblock %}

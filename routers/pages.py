@@ -75,3 +75,8 @@ async def download_file(request: Request, file_id: str, format: str):
 
     filename = f"optimized_resume.{format}"
     return FileResponse(path, filename=filename, media_type="application/octet-stream")
+
+
+@router.get("/free-ats-check", response_class=HTMLResponse)
+async def free_ats_check(request: Request):
+    return templates.TemplateResponse("ats_check.html", {"request": request})
